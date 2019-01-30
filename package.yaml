@@ -1,0 +1,34 @@
+name:                gameoflife-accelerate
+version:             0.1.0.0
+github:              "tmcdonell/gameoflife-accelerate"
+license:             BSD3
+author:              "Trevor L. McDonell"
+maintainer:          "Trevor L. McDonell &lt;trevor.mcdonell@gmail.com&gt;"
+copyright:           "Copyright (c) [2018..]. Trevor L. McDonell &lt;trevor.mcdonell@gmail.com&gt;"
+
+extra-source-files:
+- README.md
+- CHANGELOG.md
+
+# Metadata used when publishing your package
+# synopsis:            Short description of your package
+# category:            Web
+
+# To avoid duplicated efforts in documentation and dealing with the
+# complications of embedding Haddock markup inside cabal files, it is
+# common to point users to the README.md file.
+description:
+  Please see the README on GitHub at <https://github.com/tmcdonell/gameoflife-accelerate#readme>
+
+dependencies:
+  - base                >= 4.7 && < 5
+
+executables:
+  gameoflife-accelerate:
+    main:                Main.hs
+    source-dirs:         src
+    ghc-options:
+      - -threaded
+      - -rtsopts
+
+# vim: nospell
