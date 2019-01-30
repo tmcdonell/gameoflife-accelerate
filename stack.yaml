@@ -9,7 +9,9 @@ resolver: lts-13.4
 packages:
 - .
 
-# extra-deps: []
+extra-deps:
+- git:    https://github.com/tmcdonell/accelerate.git
+  commit: a4dbc84384b4a41c17ee3e0926554754eefc05fb
 
 # Override default flag values for local packages and extra-deps
 # flags:
