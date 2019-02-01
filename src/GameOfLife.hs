@@ -45,7 +45,7 @@ gol ((nw,n,ne)
     evolve :: Int -> Exp Int -> Exp a
     evolve (constant -> i) neighbours =
       let alive = testBit c i
-          next  = neighbours == 3 || (alive && neighbours == 2)
+          next  = (alive && neighbours == 2) || neighbours == 3
       in
       (0b1 `shiftL` i) * fromIntegral (boolToInt next)
 
