@@ -24,8 +24,11 @@ dependencies:
   - base                >= 4.7 && < 5
   - accelerate
   - colour-accelerate
-  - gloss-accelerate
+  - containers
   - gloss
+  - gloss-accelerate
+  - megaparsec
+  - text
 
 executables:
   gameoflife-accelerate:

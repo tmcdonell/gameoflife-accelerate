@@ -1,6 +1,11 @@
 {-# LANGUAGE FlexibleContexts    #-}
 {-# LANGUAGE ScopedTypeVariables #-}
 {-# LANGUAGE TypeApplications    #-}
+-- |
+-- Module    : Main
+-- Copyright : [2018..] Trevor L. McDonell
+-- License   : BSD3
+--
 
 module Main where
 

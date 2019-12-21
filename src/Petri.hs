@@ -1,4 +1,9 @@
 {-# LANGUAGE BinaryLiterals #-}
+-- |
+-- Module    : Petri
+-- Copyright : [2018..] Trevor L. McDonell
+-- License   : BSD3
+--
 
 module Petri where
 
