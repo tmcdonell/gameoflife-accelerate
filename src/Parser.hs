@@ -1,5 +1,7 @@
-{-# LANGUAGE FlexibleContexts  #-}
-{-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE BangPatterns        #-}
+{-# LANGUAGE FlexibleContexts    #-}
+{-# LANGUAGE OverloadedStrings   #-}
+{-# LANGUAGE ScopedTypeVariables #-}
 -- |
 -- Module    : Parser
 -- Copyright : [2018..] Trevor L. McDonell
@@ -13,19 +15,22 @@ module Parser (
 
 ) where
 
+import Control.Monad                                      ( void )
 import Data.Char
 import Data.Void
-import Control.Monad                                      ( void )
+import System.IO.Unsafe
 import Text.Megaparsec
 import Text.Megaparsec.Char
+import qualified Data.Bits                                as P
 import qualified Text.Megaparsec.Char.Lexer               as L
 import Prelude                                            as P
 
 import Data.Text.Lazy                                     ( Text )
 import qualified Data.Text.Lazy.IO                        as T
 
-import Data.Array.Accelerate                              as A hiding ( size, not )
-import Data.Array.Accelerate.Data.Bits                    as A
+import qualified Data.Array.Accelerate                    as A
+import qualified Data.Array.Accelerate.Array.Data         as A
+import qualified Data.Array.Accelerate.Array.Sugar        as A
 
 
 parseGolly :: FilePath -> IO Golly
@@ -35,11 +40,45 @@ parseGolly file = do
     Left  e -> error (errorBundlePretty e)
     Right g -> return g
 
-arrayOfGolly :: A.Integral e => Golly -> Matrix e
+arrayOfGolly :: A.Integral e => Golly -> A.Matrix e
 arrayOfGolly = undefined
 
-bitmapOfGolly :: (A.Integral e, A.FiniteBits e) => Golly -> Matrix e
-bitmapOfGolly = undefined
+bitmapOfGolly :: forall e. (P.Integral e, P.FiniteBits e, A.Elt e) => Golly -> A.Matrix e
+bitmapOfGolly (Golly w h pat) = unsafePerformIO $ do
+  let
+      bits    = P.finiteBitSize (undefined::e)
+      sz      = w' * h
+      w'      = let (q,r) = quotRem w bits
+                 in if r == 0
+                       then q
+                       else q+1
+
+  adata <- A.newArrayData sz
+  let
+      memset !i
+        | i >= sz   = return ()
+        | otherwise = A.unsafeWriteArrayData adata i (A.fromElt (0::e)) >> memset (i+1)
+
+      -- Since this is run length encoded we should make this more
+      -- efficient and write entire words at a time
+      write y x = do
+        let (q,r) = quotRem x bits
+            i     = y * w' + q
+        --
+        v <- A.unsafeReadArrayData adata i
+        A.unsafeWriteArrayData adata i (A.fromElt (P.setBit (A.toElt v :: e) (bits - r - 1)))
+
+      go _ _ []         = return ()
+      go x y (P n s:ps) =
+        case s of
+          N   -> go 0 (y+n) ps
+          S 0 -> go (x+n) y ps
+          S 1 -> mapM (write y) [x .. x+n-1] >> go (x+n) y ps
+          S _ -> error "bitmapOfGolly: only handles binary states"
+
+  memset 0
+  go 0 0 pat
+  return $! A.Array (((), h), w') adata
 
 
 -- Parser for the Extended RLE format file used by golly.
