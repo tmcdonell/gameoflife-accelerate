@@ -13,6 +13,13 @@ extra-deps:
 - github: tmcdonell/accelerate
   commit: 14c43a318ffa280fc6234eb549d69a4c6838fa3d
 
+- github: tmcdonell/accelerate-llvm
+  commit: 0f92cd6ad324f87378bffbb9b74bbd0722cee417
+  subdirs:
+    - accelerate-llvm
+    - accelerate-llvm-native
+    - accelerate-llvm-ptx
+
 - github: tmcdonell/gloss-accelerate
   commit: de4da479dfa236f4b7c08348cfc7e9fef70476ea
 
@@ -23,9 +30,9 @@ extra-deps:
   commit: f8b4eebc6b0f40a589664d2162f81fabecb0066d
 
 # Override default flag values for local packages and extra-deps
-# flags:
-#   accelerate:
-#     debug: true
+flags:
+  accelerate:
+    debug: true
 
 # Extra package databases containing global packages
 # extra-package-dbs: []

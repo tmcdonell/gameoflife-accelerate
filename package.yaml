@@ -23,6 +23,7 @@ description:
 dependencies:
   - base                >= 4.7 && < 5
   - accelerate
+  - accelerate-llvm-native
   - colour-accelerate
   - containers
   - gloss
