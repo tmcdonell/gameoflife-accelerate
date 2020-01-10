@@ -31,14 +31,15 @@ import Prelude                                            ( IO, (<$>) )
 
 main :: IO ()
 main = do
+
   -- input <- bitmapOfGolly <$> parseGolly "samples/c4-orthogonal.rle" :: IO (Matrix Word32)
   input <- bitmapOfGolly <$> parseGolly "samples/turing_js_r.rle" :: IO (Matrix Word32)
   -- input <- bitmapOfGolly <$> parseGolly "samples/metapixel-galaxy.rle" :: IO (Matrix Word32)
 
   let
       Z :. h :. w = arrayShape input
-      width       = w * bits input  * P.round factor
-      height      = h * P.round factor
+      width       = 1024 -- w * bits input  * P.round factor
+      height      = 768  -- h * P.round factor
       fps         = 15
       factor      = 2
 
