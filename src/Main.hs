@@ -40,7 +40,7 @@ main = do
       width       = w * bits input  * P.round factor
       height      = h * P.round factor
       fps         = 15
-      factor      = 1 --20
+      factor      = 2
 
       bits :: forall sh a. P.FiniteBits a => Array sh a -> Int
       bits _ = P.finiteBitSize (undefined::a)
@@ -53,6 +53,6 @@ main = do
     black
     fps
     input
-    (\x     -> bitmapOfArray (disp x) False)
+    (\x     -> scale factor factor (bitmapOfArray (disp x) False))
     (\_ _ x -> step x)
 
