@@ -19,6 +19,7 @@ import Data.Array.Accelerate.Data.Bits                    as A
 import Data.Array.Accelerate.Data.Colour.RGBA             as A
 -- import Data.Array.Accelerate.Interpreter                  as I
 import Data.Array.Accelerate.LLVM.Native                  as CPU
+-- import Data.Array.Accelerate.LLVM.PTX                     as GPU
 
 import Graphics.Gloss.Accelerate.Data.Picture
 import Graphics.Gloss.Interface.Pure.Simulate
