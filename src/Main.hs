@@ -1,4 +1,5 @@
 {-# LANGUAGE FlexibleContexts    #-}
+{-# LANGUAGE RecordWildCards     #-}
 {-# LANGUAGE ScopedTypeVariables #-}
 {-# LANGUAGE TypeApplications    #-}
 -- |
@@ -10,14 +11,11 @@
 module Main where
 
 import Draw
-import Petri
 import Parser
 import GameOfLife
 
 import Data.Array.Accelerate                              as A
-import Data.Array.Accelerate.Data.Bits                    as A
 import Data.Array.Accelerate.Data.Colour.RGBA             as A
--- import Data.Array.Accelerate.Interpreter                  as I
 import Data.Array.Accelerate.LLVM.Native                  as CPU
 -- import Data.Array.Accelerate.LLVM.PTX                     as GPU
 
@@ -26,7 +24,7 @@ import Graphics.Gloss.Interface.Pure.Simulate
 
 import qualified Data.Bits                                as P
 import qualified Prelude                                  as P
-import Prelude                                            ( IO, (<$>) )
+import Prelude                                            ( (<$>), IO )
 
 
 main :: IO ()
@@ -37,23 +35,40 @@ main = do
   -- input <- bitmapOfGolly <$> parseGolly "samples/metapixel-galaxy.rle" :: IO (Matrix Word32)
 
   let
-      Z :. h :. w = arrayShape input
-      width       = 1024 -- w * bits input  * P.round factor
-      height      = 768  -- h * P.round factor
-      fps         = 15
-      factor      = 2
-
-      bits :: forall sh a. P.FiniteBits a => Array sh a -> Int
-      bits _ = P.finiteBitSize (undefined::a)
-
-      disp = runN (A.map packRGBA8 . rgbaOfBitmap)
-      step = runN gameoflife
+      Z :. simY :. wX   = arrayShape input
+      simX              = wX * bits input
+      screenX           = 1024
+      screenY           = 768
+      fps               = 10
+      --
+      step
+        = runN
+        $ \v x -> let x' = gameoflife x
+                      bm = A.map packRGBA8 $ rgbaOfBitmap screenX screenY v x'
+                   in T2 x' bm
 
   simulate
-    (InWindow "Game of Life" (width, height) (10,10))
+    (InWindow "Game of Life" (screenX, screenY) (10,10))
     black
     fps
-    input
-    (\x     -> scale factor factor (bitmapOfArray (disp x) False))
-    (\_ _ x -> step x)
+    (input, blank)
+    P.snd
+    (\ViewPort{..} _ (x,_) ->
+      let
+          (tx, ty)  = viewPortTranslate
+          midX      = (P.fromIntegral simX / 2) - tx
+          midY      = (P.fromIntegral simY / 2) - ty
+
+          dx        = (P.fromIntegral screenX / 2) / viewPortScale
+          dy        = (P.fromIntegral screenY / 2) / viewPortScale
+
+          v         = fromList Z [ (P.floor   (midX - dx), P.floor   (midY - dy)
+                                   ,P.ceiling (midX + dx), P.ceiling (midY + dy)) ]
+
+          (x', p) = step v x
+       in
+       (x', translate (-tx) (-ty) $ bitmapOfArray p False))
+
+bits :: forall sh a. P.FiniteBits a => Array sh a -> Int
+bits _ = P.finiteBitSize (undefined::a)
 
