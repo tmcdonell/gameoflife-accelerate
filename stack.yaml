@@ -4,35 +4,35 @@
 # For advanced use and comprehensive documentation of the format, please see:
 # https://docs.haskellstack.org/en/stable/yaml_configuration/
 
-resolver: lts-14.16
+resolver: lts-14.27
 
 packages:
 - .
 
 extra-deps:
 - github: tmcdonell/accelerate
-  commit: 14c43a318ffa280fc6234eb549d69a4c6838fa3d
+  commit: da18b951f85c969971929199e0b03114ff210b6c
 
 - github: tmcdonell/accelerate-llvm
-  commit: 0f92cd6ad324f87378bffbb9b74bbd0722cee417
+  commit: 04b8107c16412368cdc65ea0cc491d0ca9bf0683
   subdirs:
     - accelerate-llvm
     - accelerate-llvm-native
     - accelerate-llvm-ptx
 
-- github: tmcdonell/gloss-accelerate
-  commit: de4da479dfa236f4b7c08348cfc7e9fef70476ea
-
 - github: tmcdonell/linear-accelerate
-  commit: 7d3bb1d40cdcc75f2f658c31b2eb7541c949e52e
+  commit: 2f4dfe92854f53c2aac9be51c9da25899a659273
+
+- github: tmcdonell/gloss-accelerate
+  commit: a6a8b3658f67b5775a0c53d6255fb732301c2cec
 
 - github: tmcdonell/colour-accelerate
   commit: f8b4eebc6b0f40a589664d2162f81fabecb0066d
 
 # Override default flag values for local packages and extra-deps
-flags:
-  accelerate:
-    debug: true
+# flags:
+#   accelerate:
+#     debug: true
 
 # Extra package databases containing global packages
 # extra-package-dbs: []
