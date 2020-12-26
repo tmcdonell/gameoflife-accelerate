@@ -4,35 +4,29 @@
 # For advanced use and comprehensive documentation of the format, please see:
 # https://docs.haskellstack.org/en/stable/yaml_configuration/
 
-resolver: lts-14.27
+resolver: nightly-2020-12-14
 
 packages:
 - .
 
 extra-deps:
-- github: tmcdonell/accelerate
-  commit: da18b951f85c969971929199e0b03114ff210b6c
-
-- github: tmcdonell/accelerate-llvm
-  commit: 04b8107c16412368cdc65ea0cc491d0ca9bf0683
-  subdirs:
-    - accelerate-llvm
-    - accelerate-llvm-native
-    - accelerate-llvm-ptx
-
-- github: tmcdonell/linear-accelerate
-  commit: 2f4dfe92854f53c2aac9be51c9da25899a659273
-
-- github: tmcdonell/gloss-accelerate
-  commit: a6a8b3658f67b5775a0c53d6255fb732301c2cec
-
-- github: tmcdonell/colour-accelerate
-  commit: f8b4eebc6b0f40a589664d2162f81fabecb0066d
+- accelerate-1.3.0.0
+- accelerate-llvm-1.3.0.0
+- accelerate-llvm-native-1.3.0.0
+- accelerate-llvm-ptx-1.3.0.0
+- colour-accelerate-0.4.0.0
+- gloss-accelerate-2.1.0.0
+- linear-accelerate-0.7.0.0
 
 # Override default flag values for local packages and extra-deps
-# flags:
-#   accelerate:
-#     debug: true
+flags:
+  accelerate:
+    debug: true
+
+# Extra per-package and global ghc options
+# Required because Cabal-3 is a broken POS
+ghc-options:
+  llvm-hs: -optcxx=-std=c++11
 
 # Extra package databases containing global packages
 # extra-package-dbs: []

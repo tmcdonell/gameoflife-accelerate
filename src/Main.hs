@@ -11,11 +11,13 @@
 module Main where
 
 import Draw
-import Parser
 import GameOfLife
+import Parser
+import Petri
 
 import Data.Array.Accelerate                              as A
 import Data.Array.Accelerate.Data.Colour.RGBA             as A
+-- import Data.Array.Accelerate.Interpreter                  as I
 import Data.Array.Accelerate.LLVM.Native                  as CPU
 -- import Data.Array.Accelerate.LLVM.PTX                     as GPU
 
@@ -29,6 +31,8 @@ import Prelude                                            ( (<$>), IO )
 
 main :: IO ()
 main = do
+
+  -- let input = blinker1
 
   -- input <- bitmapOfGolly <$> parseGolly "samples/c4-orthogonal.rle" :: IO (Matrix Word32)
   input <- bitmapOfGolly <$> parseGolly "samples/turing_js_r.rle" :: IO (Matrix Word32)
@@ -49,7 +53,7 @@ main = do
 
   simulate
     (InWindow "Game of Life" (screenX, screenY) (10,10))
-    black
+    (greyN 0.1)
     fps
     (input, blank)
     P.snd
@@ -62,8 +66,8 @@ main = do
           dx        = (P.fromIntegral screenX / 2) / viewPortScale
           dy        = (P.fromIntegral screenY / 2) / viewPortScale
 
-          v         = fromList Z [ (P.floor   (midX - dx), P.floor   (midY - dy)
-                                   ,P.ceiling (midX + dx), P.ceiling (midY + dy)) ]
+          v         = fromList Z [ (P.floor   (midX - dx), P.floor   (midY + dy)
+                                   ,P.ceiling (midX + dx), P.ceiling (midY - dy)) ]
 
           (x', p) = step v x
        in

@@ -1,5 +1,6 @@
 {-# LANGUAGE BinaryLiterals      #-}
 {-# LANGUAGE FlexibleContexts    #-}
+{-# LANGUAGE RebindableSyntax    #-}
 {-# LANGUAGE ScopedTypeVariables #-}
 {-# LANGUAGE ViewPatterns        #-}
 -- |
@@ -19,7 +20,6 @@ import Data.Array.Accelerate.Data.Bits
 
 import qualified Data.Bits                                as P
 import qualified Prelude                                  as P
-import Prelude                                            ( otherwise )
 
 
 gameoflife
@@ -27,6 +27,7 @@ gameoflife
     => Acc (Matrix a)
     -> Acc (Matrix a)
 gameoflife = stencil gol wrap
+
 
 -- The stencil pattern, where each cell is represented by a single bit.
 -- Thus this computation is actually an embedded b-wide tiled stencil, for
